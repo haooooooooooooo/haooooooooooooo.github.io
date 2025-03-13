@@ -20,12 +20,17 @@
             color: white;
             padding: 40px 20px;
             text-align: center;
+            margin-bottom: 0;
         }
         nav {
             display: flex;
             justify-content: center;
             background-color: #3700b3;
             padding: 10px;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            margin-top: 0;
         }
         nav a {
             color: white;
@@ -33,8 +38,9 @@
             margin: 0 15px;
             font-weight: bold;
         }
-        nav a:hover {
+        nav a:hover, nav a.active {
             text-decoration: underline;
+            color: #ffd700;
         }
         main {
             padding: 20px;
@@ -53,9 +59,6 @@
         h1 {
             margin-top: 0;
         }
-        .intro {
-            font-size: 1.2em;
-        }
         .research-list {
             list-style-type: none;
             padding: 0;
@@ -66,23 +69,16 @@
             padding: 15px;
             border-radius: 5px;
             box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: transform 0.3s ease-in-out;
         }
-        .research-list strong {
-            color: #6200ea;
-        }
-        .research-list a {
-            color: #3700b3;
-            text-decoration: none;
-        }
-        .research-list a:hover {
-            text-decoration: underline;
+        .research-list li:hover {
+            transform: scale(1.05);
         }
     </style>
 </head>
 <body>
     <header>
         <h1>Junhao Wu</h1>
-        <!-- <p class="intro">Hi, I'm a senior student at the School of Software Engineering, Sun Yat-sen University.</p> -->
     </header>
     <nav>
         <a href="#about">About Me</a>
@@ -92,9 +88,7 @@
     <main>
         <section id="about">
             <h2>About Me</h2>
-            <p>
-                Hello! I'm a senior student at the School of Software Engineering, Sun Yat-sen University.
-            </p>
+            <p id="typingText"></p>
         </section>
         <section id="research">
             <h2>Research Experience</h2>
@@ -102,39 +96,72 @@
                 <li>
                     <strong>Patent: "一种跨元宇宙互操作方法、装置、电子设备及存储介质"</strong> (2024)
                     <p>
-                        Patent No. 202410942421X. This innovation aims to enhance connectivity and user experience in virtual environments.
-                        <br>
-                        <a href="https://cpquery.cponline.cnipa.gov.cn/detail/index?zhuanlisqh=aboT0SkvCVoU%252BdUTc5fhRQ%253D%253D&anjianbh" target="_blank">View patent details</a>
+                        Patent No. 202410942421X.
+                        This innovation aims to enhance connectivity and user experience in virtual environments.
                     </p>
+                    <a href="https://cpquery.cponline.cnipa.gov.cn/detail/index?zhuanlisqh=aboT0SkvCVoU%252BdUTc5fhRQ%253D%253D&anjianbh" target="_blank">View patent details</a>
                 </li>
                 <li>
                     <strong>Paper: "Economic Systems in Metaverse: Basics, State of the Art, and Challenges"</strong> (2023)
                     <p>
-                        Published in <em>ACM Computing Surveys</em>. This work provides a comprehensive review of economic systems in the Metaverse and identifies future research directions.
-                        <br>
-                        <a href="https://www.researchgate.net/publication/374495943_Economic_Systems_in_Metaverse_Basics_State_of_the_Art_and_Challenges" target="_blank">Read the paper</a>
+                        Published in <em>ACM Computing Surveys</em>.
+                        This work provides a comprehensive review of economic systems in the Metaverse and identifies future research directions.
                     </p>
+                    <a href="https://www.researchgate.net/publication/374495943_Economic_Systems_in_Metaverse_Basics_State_of_the_Art_and_Challenges" target="_blank">Read the paper</a>
                 </li>
                 <li>
                     <strong>Project: BlockEmulator</strong> (2023)
                     <p>
                         Developed a blockchain experimental platform named BlockEmulator, designed to simulate and analyze various blockchain consensus algorithms and network behaviors.
-                        <br>
-                        <a href="https://www.blockemulator.com" target="_blank">View project details</a>
                     </p>
+                    <a href="https://www.blockemulator.com" target="_blank">View project details</a>
                 </li>
             </ul>
         </section>
         <section id="contact">
             <h2>Contact Me</h2>
-            <p>
-                You can reach out to me via:
-                <ul>
-                    <li>Email: <a href="mailto:wujh257@mail2.sysu.edu.cn">wujh257@mail2.sysu.edu.cn</a></li>
-                    <li>GitHub: <a href="https://github.com/haooooooooooooo" target="_blank">haooooooooooooo</a></li>
-                </ul>
-            </p>
+            <ul>
+                <li>Email: <a href="mailto:wujh257@mail2.sysu.edu.cn">wujh257@mail2.sysu.edu.cn</a></li>
+                <li>GitHub: <a href="https://github.com/haooooooooooooo" target="_blank">haooooooooooooo</a></li>
+            </ul>
         </section>
     </main>
+    <script>
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                document.querySelector(this.getAttribute('href')).scrollIntoView({ behavior: 'smooth' });
+            });
+        });
+        
+        const sections = document.querySelectorAll('section');
+        const navLinks = document.querySelectorAll('nav a');
+
+        window.addEventListener('scroll', () => {
+            let current = '';
+            sections.forEach(section => {
+                if (window.scrollY >= section.offsetTop - 60) {
+                    current = section.getAttribute('id');
+                }
+            });
+            navLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href').substring(1) === current) {
+                    link.classList.add('active');
+                }
+            });
+        });
+
+        const text = "Hello! I'm a senior student at the School of Software Engineering, Sun Yat-sen University.";
+        let i = 0;
+        function typeWriter() {
+            if (i < text.length) {
+                document.getElementById("typingText").innerHTML += text.charAt(i);
+                i++;
+                setTimeout(typeWriter, 50);
+            }
+        }
+        window.onload = typeWriter;
+    </script>
 </body>
 </html>
